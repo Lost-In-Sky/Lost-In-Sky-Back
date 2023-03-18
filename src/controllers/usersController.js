@@ -1,4 +1,4 @@
-const { createUser, getUsers, updateUser, deleteUser } = require('../services/users')
+const { createUser, getUsers, getUser, updateUser, deleteUser } = require('../services/users')
 
 // Users Controller
 exports.createUser = (request, response) => {
@@ -7,6 +7,10 @@ exports.createUser = (request, response) => {
 
 exports.getUsers = (request, response) => {
     getUsers(request, response);
+}
+
+exports.getUser =(request, response) => {
+    getUser(request, response);
 }
 
 exports.updateUser = (request, response) => {

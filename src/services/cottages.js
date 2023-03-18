@@ -20,6 +20,11 @@ async function getCottages(request, response) {
     response.status(200).json(data)
 }
 
+async function getCottage(request, response) {
+    const data = await Cottages.findAll({where: { "id": request.params.id}})
+    response.status(200).json(data)
+}
+
 async function updateCottage(request,response) {
     const { id, name, capacity, price, numberOfFloors, space } = request.body
 
@@ -44,7 +49,7 @@ async function updateCottage(request,response) {
 
 async function deleteCottage(request,response) {
     await Cottages.destroy({
-        where: { "id": request.body.id}
+        where: { "id": request.params.id}
     })
 
     response.status(202).send(`Cottage successfully deleted`)
@@ -55,6 +60,7 @@ async function deleteCottage(request,response) {
 module.exports = {
     createCottage,
     getCottages,
+    getCottage,
     updateCottage,
     deleteCottage
 }

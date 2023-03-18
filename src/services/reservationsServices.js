@@ -12,11 +12,16 @@ async function createService(request, response) {
             reservationId: reservationId,
         }])
 
-    response.status(201).send(`User successfully created`)
+    response.status(201).send(`Service successfully created`)
 };
 
 async function getServices(request, response) {
     const data = await ReservationService.findAll()
+    response.status(200).json(data)
+}
+
+async function getService(request, response) {
+    const data = await ReservationService.findAll({where: { "id": request.params.id}})
     response.status(200).json(data)
 }
 
@@ -44,7 +49,7 @@ async function updateService(request,response) {
 
 async function deleteService(request,response) {
     await ReservationService.destroy({
-        where: { "id": request.body.id}
+        where: { "id": request.params.id}
     })
 
     response.status(202).send(`Service successfully deleted`)
@@ -53,6 +58,7 @@ async function deleteService(request,response) {
 module.exports = {
     createService,
     getServices,
+    getService,
     updateService,
     deleteService
 }

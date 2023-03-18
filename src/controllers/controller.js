@@ -1,4 +1,4 @@
-const { getAllReservationsForCottage, getAllServicesForReservations } = require('../services/dbServices.js');
+const { getAllReservationsForCottage, getAllServicesForReservations } = require('../services/dbServices');
 exports.getAllReservationsForCottage = (request, response) => {
   getAllReservationsForCottage(request, response);
 }

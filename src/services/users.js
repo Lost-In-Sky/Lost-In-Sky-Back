@@ -20,6 +20,11 @@ async function getUsers(request, response) {
     response.status(200).json(data)
 }
 
+async function getUser(request, response) {
+    const data = await Users.findAll({where: { "id": request.params.id}})
+    response.status(200).json(data)
+}
+
 async function updateUser(request,response) {
     const { id, firstName, lastName, email, password, type } = request.body
 
@@ -43,7 +48,7 @@ async function updateUser(request,response) {
 
 async function deleteUser(request,response) {
     await Users.destroy({
-        where: { "id": request.body.id}
+        where: { "id": request.params.id}
     })
 
     response.status(202).send(`User successfully deleted`)
@@ -52,6 +57,7 @@ async function deleteUser(request,response) {
 module.exports = {
     createUser,
     getUsers,
+    getUser,
     updateUser,
     deleteUser
 }

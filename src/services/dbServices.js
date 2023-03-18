@@ -218,7 +218,7 @@ async function getAllReservationsForCottage(request, response) {
 
 async function getAllServicesForReservations(request, response) {
     // let services = [];
-    const reservationId = request.body.id;
+    const reservationId = request.params.id;
 
     const reservation = await Reservations.findAll({
       where: { id: reservationId },

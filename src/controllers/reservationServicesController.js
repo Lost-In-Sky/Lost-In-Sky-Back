@@ -1,4 +1,4 @@
-const { createService, getServices, updateService, deleteService } = require('../services/reservationsServices')
+const { createService, getServices, getService, updateService, deleteService } = require('../services/reservationsServices')
 
 // ReservationsServices Controller
 exports.createService = (request, response) => {
@@ -7,6 +7,10 @@ exports.createService = (request, response) => {
 
 exports.getServices = (request, response) => {
     getServices(request, response);
+}
+
+exports.getService = (request, response) => {
+    getService(request, response);
 }
 
 exports.updateService = (request, response) => {
