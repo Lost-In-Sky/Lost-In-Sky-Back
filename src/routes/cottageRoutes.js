@@ -3,14 +3,14 @@ const router = express.Router()
 
 const { createCottage, getCottages, getCottage, updateCottage, deleteCottage } = require('../controllers/cottagesController')
 
-router.post('/api/cottage', createCottage)
+router.post('/', createCottage)
 
-router.get('/api/cottage', getCottages)
+router.get('/', getCottages)
 
-router.get('/api/cottage/:id', getCottage)
+router.get('/:id', getCottage)
 
-router.patch('/api/cottage', updateCottage)
+router.patch('/', updateCottage)
 
-router.delete('/api/cottage', deleteCottage)
+router.delete('/', deleteCottage)
 
 module.exports = router

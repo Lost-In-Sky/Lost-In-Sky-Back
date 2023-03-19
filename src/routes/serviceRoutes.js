@@ -1,16 +1,22 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 
-const { createService, getServices, getService, updateService, deleteService } = require('../controllers/reservationServicesController')
+const {
+  createService,
+  getServices,
+  getService,
+  updateService,
+  deleteService,
+} = require("../controllers/reservationServicesController");
 
-router.post('/api/service', createService)
+router.post("/", createService);
 
-router.get('/api/service', getServices)
+router.get("/", getServices);
 
-router.get('/api/service/:id', getService)
+router.get("/:id", getService);
 
-router.patch('/api/service', updateService)
+router.patch("/", updateService);
 
-router.delete('/api/service', deleteService)
+router.delete("/", deleteService);
 
-module.exports = router
+module.exports = router;
