@@ -1,4 +1,4 @@
-const { Sequelize, Model, DataTypes, where } = require('sequelize');
+const { Sequelize, Model, DataTypes } = require('sequelize');
 
 // const sequelize = new Sequelize('postgres://postgres:password@localhost:5432/api')
 
@@ -130,9 +130,6 @@ Reservations.init(
     cottageId: {
         type: DataTypes.INTEGER,
         allowNull: false
-    },
-    reservationServiceId: {
-        type: DataTypes.INTEGER
     }
     // add more columns as necessary
   },
@@ -147,7 +144,7 @@ class ReservationService extends Model {}
 ReservationService.init(
   {
     // define the columns of the reservationService table here
-    reservationServiceId: {
+    id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       autoIncrement: true,
@@ -169,6 +166,10 @@ ReservationService.init(
     servicePrice: {
         type: DataTypes.DOUBLE,
         allowNull: false
+    },
+    reservationId: {
+        type: DataTypes.UUID,
+        allowNull: false
     }
     // add more columns as necessary
   },
@@ -188,27 +189,13 @@ sequelize.sync()
     console.error('Error syncing tables:', error);
   });
 
-Reservations.belongsTo(Cottages);
+Reservations.belongsTo(Cottages, {
+    foreignKey: 'cottageId'
+});
 Reservations.hasMany(ReservationService, {
-    foreignKey: 'reservationServiceId',
+    foreignKey: 'reservationId',
     onDelete: 'CASCADE',
   });
-
-const tables = {
-    "users": Users,
-    "reservations": Reservations,
-    "reservationservices": ReservationService,
-    "cottages": Cottages
-}
-
-
-
-async function getTableData(request, response) {
-    let tableName = tables[request.body.tableName.toLowerCase()] || Reservations;
-    const data = await tableName.findAll()
-
-    response.status(200).json(data)
-}
 
 async function getAllReservationsForCottage(request, response) {
     let dates = [];
@@ -229,105 +216,30 @@ async function getAllReservationsForCottage(request, response) {
     response.status(200).json(dates)
 }
 
-// async function getAllServicesForReservations(request, response) {
-//     let services = [];
-//     const reservationId = request.body.id;
+async function getAllServicesForReservations(request, response) {
+    // let services = [];
+    const reservationId = request.params.id;
 
-//     const reservation = await Reservations.findAll({
-//       where: { id: reservationId },
-//       include: { model: ReservationService }
-//     });
+    const reservation = await Reservations.findAll({
+      where: { id: reservationId },
+      include: { model: ReservationService }
+    });
 
-//     if (!reservation) {
-//         return response.status(404).json({ error: 'Reservation not found' });
-//       }
-//     reservation.forEach(element => {
-//         services.push(element)
-//     });
-//     response.status(200).json(services)
-// };
-
-async function deleteTableData(request,response) {
-    let tableName = tables[request.body.tableName.toLowerCase()] || Reservations;
-    await tableName.destroy({
-        where: { "id": request.body.id}
-    })
-
-    response.status(202).send(`Item deleted successfully from ${request.body.tableName}`)
+    if (!reservation) {
+        return response.status(404).json({ error: 'Reservation not found' });
+      }
+    // code for just getting the services without reservation itself
+    // reservation.forEach(element => {
+    //     services.push(element.reservationservices)
+    // });
+    response.status(200).json(reservation)
 };
 
-async function createItem(request, response) {
-    let tableName = tables[request.body.tableName.toLowerCase()] || Reservations;
-    const { status , date , checkIn , checkOut , totalPrice , description, cottageId, reservationServiceId, name, capacity, price, numberOfFloors, space, type, servicePrice, firstName, lastName, email, password, approved } = request.body
-
-    await tableName.bulkCreate([
-        {
-            status: status,
-            approved: approved,
-            date: date ,
-            checkIn: checkIn ,
-            checkOut: checkOut ,
-            totalPrice: totalPrice ,
-            description: description,
-            cottageId: cottageId,
-            reservationServiceId: reservationServiceId,
-            name: name,
-            capacity: capacity,
-            price: price,
-            numberOfFloors: numberOfFloors,
-            space: space,
-            type: type,
-            servicePrice: servicePrice,
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password,
-        }])
-
-    response.status(201).send(`Reservation successfully added to ${request.body.tableName}`)
-}
-
-async function updateItem(request,response) {
-    let tableName = tables[request.body.tableName.toLowerCase()] || Reservations;
-    const { id, status , date , checkIn , checkOut , totalPrice , description, cottageId, reservationServiceId, name, capacity, price, numberOfFloors, space, type, servicePrice, firstName, lastName, email, password, approved } = request.body
-    await tableName.update(
-        {
-            status: status,
-            approved: approved,
-            date: date ,
-            checkIn: checkIn ,
-            checkOut: checkOut ,
-            totalPrice: totalPrice ,
-            description: description,
-            cottageId: cottageId,
-            reservationServiceId: reservationServiceId,
-            name: name,
-            capacity: capacity,
-            price: price,
-            numberOfFloors: numberOfFloors,
-            space: space,
-            type: type,
-            servicePrice: servicePrice,
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: password,
-        },
-        {
-            where: {
-                "id": id
-            }
-        }
-    )
-
-    response.status(202).send(`Item successfully updated`)
-}
-
 module.exports = {
-    createItem,
-    deleteTableData,
-    getTableData,
-    updateItem,
+    Users,
+    Reservations,
+    ReservationService,
+    Cottages,
     getAllReservationsForCottage,
-    // getAllServicesForReservations
+    getAllServicesForReservations
 };
