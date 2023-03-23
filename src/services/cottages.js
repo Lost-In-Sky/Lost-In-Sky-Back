@@ -1,66 +1,99 @@
-const { Cottages } = require('./dbServices')
+const Cottages = require('../models/index').cottages;
+const checkForError = require('./errorHandler');
 
 async function createCottage(request, response) {
-    const { name, capacity, price, numberOfFloors, space } = request.body
+  const { name, capacity, price, numberOfFloors, space } = request.body;
 
-    await Cottages.bulkCreate([
-        {
-            name: name,
-            capacity: capacity,
-            price: price,
-            numberOfFloors: numberOfFloors,
-            space: space,
-        }])
+  const creation = await Cottages.create({
+    name: name,
+    capacity: capacity,
+    price: price,
+    numberOfFloors: numberOfFloors,
+    space: space,
+  });
 
-    response.status(201).send(`Cottage successfully created`)
-};
+  await checkForError(creation);
+
+  response.status(201).send(`Cottage successfully created`);
+}
+
+
+/* try {
+    const foundLogs = await Dailylogs.findAll({
+      where: {
+        user_id: user_id,
+        timestamp: { [Op.between]: [start_date, end_date] },
+      },
+    });
+
+    res.status(STATUS.OK).send(foundLogs);
+  } catch (err) {
+    throw new BadRequest('Error getting the logs ' + err);
+  } */
 
 async function getCottages(request, response) {
-    const data = await Cottages.findAll()
-    response.status(200).json(data)
+  const data = await Cottages.findAll();
+
+  await checkForError(data);
+
+  response.status(200).json(data);
 }
 
 async function getCottage(request, response) {
-    const data = await Cottages.findAll({where: { "id": request.params.id}})
-    response.status(200).json(data)
+  try {
+    const data = await Cottages.findAll({ where: { id: request.params.id } });
+    if (data.length === 0) {
+      throw new Error();
+    }
+    response.status(200).json(data);
+  } catch (e) {
+    response
+      .status(404)
+      .send("Unable to find cottage or the cottage doesn't exist");
+  }
 }
 
-async function updateCottage(request,response) {
-    const { id, name, capacity, price, numberOfFloors, space } = request.body
+async function updateCottage(request, response) {
+  const { name, capacity, price, numberOfFloors, space } = request.body;
 
+  const edition = await Cottages.update(
+    {
+      name: name,
+      capacity: capacity,
+      price: price,
+      numberOfFloors: numberOfFloors,
+      space: space,
+    },
+    {
+      where: {
+        id: request.params.id,
+      },
+    }
+  );
 
-    await Cottages.update(
-        {
-            name: name,
-            capacity: capacity,
-            price: price,
-            numberOfFloors: numberOfFloors,
-            space: space,
-        },
-        {
-            where: {
-                "id": id
-            }
-        }
-    )
+  if (edition) {
+    response.status(202).send(`Cottages successfully created`);
+  }
 
-    response.status(202).send(`Cottages successfully updated`)
+  response.status(404).send('Unable to create cottage');
 }
 
-async function deleteCottage(request,response) {
-    await Cottages.destroy({
-        where: { "id": request.params.id}
-    })
+async function deleteCottage(request, response) {
+  const deletion = await Cottages.destroy({
+    where: { id: request.params.id },
+  });
 
-    response.status(202).send(`Cottage successfully deleted`)
+  if (deletion) {
+    response.status(202).send(`Cottage successfully deleted`);
+  }
 
-};
-
+  response.status(404).send('Unable to find cottage');
+}
 
 module.exports = {
-    createCottage,
-    getCottages,
-    getCottage,
-    updateCottage,
-    deleteCottage
-}
+  createCottage,
+  getCottages,
+  getCottage,
+  updateCottage,
+  deleteCottage,
+};

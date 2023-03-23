@@ -1,16 +1,22 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
-const { createCottage, getCottages, getCottage, updateCottage, deleteCottage } = require('../controllers/cottagesController')
+const {
+  createCottage,
+  getCottages,
+  getCottage,
+  updateCottage,
+  deleteCottage,
+} = require('../controllers/cottagesController');
 
-router.post('/', createCottage)
+router.post('/', createCottage);
 
-router.get('/', getCottages)
+router.get('/', getCottages);
 
-router.get('/:id', getCottage)
+router.get('/:id', getCottage);
 
-router.patch('/', updateCottage)
+router.patch('/:id', updateCottage);
 
-router.delete('/', deleteCottage)
+router.delete('/:id', deleteCottage);
 
-module.exports = router
+module.exports = router;
