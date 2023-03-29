@@ -2,13 +2,8 @@ const Reservations = require('../models/index').reservations
 const ReservationServices = require('../models/index').reservationservices
 const Cottages = require('../models/index').cottages
 
-
-
 Reservations.belongsTo(Cottages, {
   foreignKey: 'cottageId',
-});
-Reservations.hasMany(ReservationServices, {
-  foreignKey: 'reservationId',
 });
 
 async function getAllReservationsForCottage(request, response) {

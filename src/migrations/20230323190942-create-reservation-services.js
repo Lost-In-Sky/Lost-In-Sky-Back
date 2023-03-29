@@ -25,11 +25,7 @@ module.exports = {
       servicePrice: {
         type: DataTypes.DOUBLE,
         allowNull: false,
-      },
-      reservationId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-      },
+      }
     });
   },
   async down(queryInterface, DataTypes) {

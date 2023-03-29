@@ -35,11 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       servicePrice: {
         type: DataTypes.DOUBLE,
         allowNull: false,
-      },
-      reservationId: {
-        type: DataTypes.UUID,
-        allowNull: false,
-      },
+      }
       // add more columns as necessary
     },
     {

@@ -1,80 +1,114 @@
 const Reservations = require('../models/index').reservations;
-
+const checkForError = require('./errorHandler');
 
 async function createReservation(request, response) {
-  const {
-    approved,
-    date,
-    checkIn,
-    checkOut,
-    totalPrice,
-    description,
-    cottageId,
-  } = request.body;
+  try {
+    const {
+      approved,
+      date,
+      checkIn,
+      checkOut,
+      totalPrice,
+      description,
+      cottageId,
+    } = request.body;
 
-  await Reservations.bulkCreate([
-    {
-      approved: approved,
-      date: date,
-      checkIn: checkIn,
-      checkOut: checkOut,
-      totalPrice: totalPrice,
-      description: description,
-      cottageId: cottageId,
-    },
-  ]);
+    const creation = await Reservations.bulkCreate([
+      {
+        approved: approved,
+        date: date,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        totalPrice: totalPrice,
+        description: description,
+        cottageId: cottageId,
+      },
+    ]);
 
-  response.status(201).send(`Reservation successfully created`);
+    await checkForError(creation);
+
+    response.status(201).send(`Reservation successfully created`);
+  } catch (error) {
+    response.status(404).send('Not able to create reservation');
+  }
 }
 
 async function getReservations(request, response) {
-  const data = await Reservations.findAll();
-  response.status(200).json(data);
+  try {
+    const data = await Reservations.findAll();
+
+    await checkForError(data);
+
+    response.status(200).json(data);
+  } catch (error) {
+    response.status(404).send('Not able to find reservations');
+  }
 }
 
 async function getReservation(request, response) {
-  const data = await Reservations.findAll({ where: { id: request.params.id } });
-  response.status(200).json(data);
+  try {
+    const data = await Reservations.findAll({
+      where: { id: request.params.id },
+    });
+
+    await checkForError(data);
+
+    response.status(200).json(data);
+  } catch (error) {
+    response.status(404).send('Not able to find reservation');
+  }
 }
 
 async function updateReservation(request, response) {
-  const {
-    id,
-    approved,
-    date,
-    checkIn,
-    checkOut,
-    totalPrice,
-    description,
-    cottageId,
-  } = request.body;
+  try {
+    const {
+      id,
+      approved,
+      date,
+      checkIn,
+      checkOut,
+      totalPrice,
+      description,
+      cottageId,
+    } = request.body;
 
-  await Reservations.update(
-    {
-      approved: approved,
-      date: date,
-      checkIn: checkIn,
-      checkOut: checkOut,
-      totalPrice: totalPrice,
-      description: description,
-      cottageId: cottageId,
-    },
-    {
-      where: {
-        id: id,
+    const edition = await Reservations.update(
+      {
+        approved: approved,
+        date: date,
+        checkIn: checkIn,
+        checkOut: checkOut,
+        totalPrice: totalPrice,
+        description: description,
+        cottageId: cottageId,
       },
-    }
-  );
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
 
-  response.status(202).send(`Reservations successfully updated`);
+    await checkForError(edition);
+
+    response.status(202).send(`Reservations successfully updated`);
+  } catch (error) {
+    response.status(404).send('Not able to update reservation');
+  }
 }
 
 async function deleteReservation(request, response) {
-  await Reservation.destroy({
-    where: { id: request.params.id },
-  });
+  try {
+    const deletion = await Reservation.destroy({
+      where: { id: request.params.id },
+    });
 
-  response.status(202).send(`Reservation successfully deleted`);
+    await checkForError(deletion);
+
+    response.status(202).send(`Reservation successfully deleted`);
+  } catch (error) {
+    response.status(404).send('Not able to delete reservation');
+  }
 }
 
 module.exports = {

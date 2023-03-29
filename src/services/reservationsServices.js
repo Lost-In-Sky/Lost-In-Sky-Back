@@ -1,60 +1,91 @@
 const ReservationServices = require('../models/index').reservationservices;
+const checkForError = require('./errorHandler');
 
 async function createService(request, response) {
-  const { date, status, type, servicePrice, reservationId } = request.body;
+  try {
+    const { date, status, type, servicePrice } = request.body;
 
-  await ReservationServices.bulkCreate([
-    {
-      date: date,
-      status: status,
-      type: type,
-      servicePrice: servicePrice,
-      reservationId: reservationId,
-    },
-  ]);
+    const creation = await ReservationServices.bulkCreate([
+      {
+        date: date,
+        status: status,
+        type: type,
+        servicePrice: servicePrice,
+      },
+    ]);
 
-  response.status(201).send(`Service successfully created`);
+    await checkForError(creation);
+
+    response.status(201).send(`Service successfully created`);
+  } catch (error) {
+    response.status(404).send('Not able to create service');
+  }
 }
 
 async function getServices(request, response) {
-  const data = await ReservationServices.findAll();
-  response.status(200).json(data);
+  try {
+    const data = await ReservationServices.findAll();
+
+    await checkForError(data);
+
+    response.status(200).json(data);
+  } catch (error) {
+    response.status(404).send('Not able to find services');
+  }
 }
 
 async function getService(request, response) {
-  const data = await ReservationServices.findAll({
-    where: { id: request.params.id },
-  });
-  response.status(200).json(data);
+  try {
+    const data = await ReservationServices.findAll({
+      where: { id: request.params.id },
+    });
+
+    await checkForError(data);
+
+    response.status(200).json(data);
+  } catch (error) {
+    response.status(404).send('Not able to find service');
+  }
 }
 
 async function updateService(request, response) {
-  const { id, name, capacity, price, numberOfFloors, space } = request.body;
+  try {
+    const { date, status, type, servicePrice } = request.body;
 
-  await ReservationServices.update(
-    {
-      name: name,
-      capacity: capacity,
-      price: price,
-      numberOfFloors: numberOfFloors,
-      space: space,
-    },
-    {
-      where: {
-        id: id,
+    const edition = await ReservationServices.update(
+      {
+        date: date,
+        status: status,
+        type: type,
+        servicePrice: servicePrice,
       },
-    }
-  );
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
 
-  response.status(202).send(`Service successfully updated`);
+    await checkForError(edition);
+
+    response.status(202).send(`Service successfully updated`);
+  } catch (error) {
+    response.status(404).send('Not able to update service');
+  }
 }
 
 async function deleteService(request, response) {
-  await ReservationServices.destroy({
-    where: { id: request.params.id },
-  });
+  try {
+    const deletion = await ReservationServices.destroy({
+      where: { id: request.params.id },
+    });
 
-  response.status(202).send(`Service successfully deleted`);
+    await checkForError(deletion);
+
+    response.status(202).send(`Service successfully deleted`);
+  } catch (error) {
+    response.status(404).send('Not able to delete service');
+  }
 }
 
 module.exports = {
