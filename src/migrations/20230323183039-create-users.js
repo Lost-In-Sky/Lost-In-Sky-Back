@@ -27,10 +27,11 @@ module.exports = {
       },
       type: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
     });
   },
   async down(queryInterface, DataTypes) {
     await queryInterface.dropTable('users');
-  }
+  },
 };
