@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const cookieSession = require('cookie-session');
 
 const router = require('./routes/index.js');
 
@@ -22,7 +23,20 @@ app.use(
   })
 );
 
+app.use(
+  cookieSession({
+    name: 'lostinsky-session',
+    secret: process.env.COOKIE_SECRET, // should use as secret environment variable
+    httpOnly: true,
+  })
+);
+
 app.use('/', router);
+app.get('/', (request, response) => {
+  response
+    .status(200)
+    .json({ message: 'Server is running properly', status: 200 });
+});
 
 app.listen(port, async () => {
   console.log(`App running on port http://localhost:${port}/`);
@@ -33,7 +47,5 @@ app.listen(port, async () => {
     throw new InternalError('Unable to connect to the database', error);
   }
 });
-
-
 
 module.exports = { app };

@@ -1,5 +1,28 @@
 const Reservations = require('../models/index').reservations;
 const checkForError = require('./errorHandler');
+const Cottages = require('../models/index').cottages;
+const ReservationServices = require('../models/index').reservationservices;
+
+async function calculateTotalPrice(
+  cottageId,
+  serviceId,
+  checkInDate,
+  checkOutDate
+) {
+  const cottagePrice = await Cottages.findOne({ where: { id: cottageId } });
+  const servicePrice = await ReservationServices.findOne({
+    where: { id: serviceId },
+  });
+  const date1 = new Date(checkInDate);
+  const date2 = new Date(checkOutDate);
+  const diffTime = Math.abs(date2 - date1);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  let totalPrice = cottagePrice.price * diffDays + servicePrice.servicePrice;
+
+  return totalPrice;
+}
+
 
 async function createReservation(request, response) {
   try {
@@ -8,19 +31,25 @@ async function createReservation(request, response) {
       date,
       checkIn,
       checkOut,
-      totalPrice,
       description,
+      service,
       cottageId,
     } = request.body;
 
-    const creation = await Reservations.bulkCreate([
+    let creation = await Reservations.bulkCreate([
       {
         approved: approved,
         date: date,
         checkIn: checkIn,
         checkOut: checkOut,
-        totalPrice: totalPrice,
+        totalPrice: await calculateTotalPrice(
+          cottageId,
+          service.id,
+          checkIn,
+          checkOut
+        ),
         description: description,
+        service: service,
         cottageId: cottageId,
       },
     ]);
@@ -69,6 +98,7 @@ async function updateReservation(request, response) {
       checkOut,
       totalPrice,
       description,
+      service,
       cottageId,
     } = request.body;
 
@@ -80,6 +110,7 @@ async function updateReservation(request, response) {
         checkOut: checkOut,
         totalPrice: totalPrice,
         description: description,
+        service: service,
         cottageId: cottageId,
       },
       {

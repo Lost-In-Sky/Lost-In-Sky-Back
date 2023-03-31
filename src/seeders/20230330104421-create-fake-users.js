@@ -1,4 +1,5 @@
 'use strict';
+const bcrypt = require('bcryptjs');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -20,7 +21,7 @@ module.exports = {
           firstName: 'John',
           lastName: 'Doe',
           email: 'johndoe@gmail.com',
-          password: 'mySimplePassword',
+          password: await bcrypt.hash('mySimplePassword', 8),
           type: 'admin',
         },
         {
@@ -28,7 +29,7 @@ module.exports = {
           firstName: 'Wane',
           lastName: 'Doe',
           email: 'wanedoe@gmail.com',
-          password: 'myVerySimplePassword',
+          password: await bcrypt.hash('myVerySimplePassword', 8),
           type: 'standard',
         },
         {
@@ -36,7 +37,7 @@ module.exports = {
           firstName: 'Jane',
           lastName: 'Doe',
           email: 'janedoe@gmail.com',
-          password: 'myNotSimplePassword',
+          password: await bcrypt.hash('myNotSimplePassword', 8),
           type: 'superadmin',
         },
       ],

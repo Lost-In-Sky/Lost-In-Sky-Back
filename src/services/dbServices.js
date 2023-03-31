@@ -1,4 +1,5 @@
 const Reservations = require('../models/index').reservations;
+const ReservationServices = require('../models/index').reservationservices;
 const Cottages = require('../models/index').cottages;
 const checkForError = require('./errorHandler');
 
@@ -30,26 +31,34 @@ async function getAllReservationsForCottage(request, response) {
     });
     response.status(200).json(dates);
   } catch (error) {
-    response.status(404).send('Not able to find any reservation connected to this cottage');
+    response
+      .status(404)
+      .send('Not able to find any reservation connected to this cottage');
   }
 }
 
 async function getAllServicesForReservations(request, response) {
   try {
     const reservationId = request.params.id;
-
     const reservation = await Reservations.findAll({
       where: { id: reservationId },
-      include: { model: ReservationService },
+    });
+    const serviceForThisReservation = await ReservationServices.findAll({
+      where: { id: reservation[0].service.id },
     });
 
     if (!reservation) {
       return response.status(404).json({ error: 'Reservation not found' });
     }
 
-    await checkForError(reservation);
+    if (!serviceForThisReservation) {
+      return response.status(404).json({ error: 'Service not found' });
+    }
 
-    response.status(200).json(reservation);
+    await checkForError(reservation);
+    await checkForError(serviceForThisReservation);
+
+    response.status(200).json(serviceForThisReservation);
   } catch (error) {
     response
       .status(404)
