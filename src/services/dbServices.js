@@ -1,54 +1,60 @@
-const Reservations = require('../models/index').reservations
-const ReservationServices = require('../models/index').reservationservices
-const Cottages = require('../models/index').cottages
-
-
+const Reservations = require('../models/index').reservations;
+const Cottages = require('../models/index').cottages;
+const checkForError = require('./errorHandler');
 
 Reservations.belongsTo(Cottages, {
   foreignKey: 'cottageId',
 });
-Reservations.hasMany(ReservationServices, {
-  foreignKey: 'reservationId',
-});
 
 async function getAllReservationsForCottage(request, response) {
-  let dates = [];
-  let cotId = request.params.id;
-  const data = await Reservations.findAll({
-    include: [
-      {
-        model: Cottages,
-        required: true,
-        where: { id: cotId },
-      },
-    ],
-  });
-  data.forEach((element) => {
-    dates.push({
-      checkIn: element.checkIn,
-      checkOut: element.checkOut,
+  try {
+    let dates = [];
+    let cotId = request.params.id;
+    const data = await Reservations.findAll({
+      include: [
+        {
+          model: Cottages,
+          required: true,
+          where: { id: cotId },
+        },
+      ],
     });
-  });
-  response.status(200).json(dates);
+
+    await checkForError(data);
+
+    data.forEach((element) => {
+      dates.push({
+        checkIn: element.checkIn,
+        checkOut: element.checkOut,
+      });
+    });
+    response.status(200).json(dates);
+  } catch (error) {
+    response.status(404).send('Not able to find any reservation connected to this cottage');
+  }
 }
 
 async function getAllServicesForReservations(request, response) {
-  // let services = [];
-  const reservationId = request.params.id;
+  try {
+    const reservationId = request.params.id;
 
-  const reservation = await Reservations.findAll({
-    where: { id: reservationId },
-    include: { model: ReservationService },
-  });
+    const reservation = await Reservations.findAll({
+      where: { id: reservationId },
+      include: { model: ReservationService },
+    });
 
-  if (!reservation) {
-    return response.status(404).json({ error: 'Reservation not found' });
+    if (!reservation) {
+      return response.status(404).json({ error: 'Reservation not found' });
+    }
+
+    await checkForError(reservation);
+
+    response.status(200).json(reservation);
+  } catch (error) {
+    response
+      .status(404)
+      .send('Not able to find any service connected to this reservation');
   }
-  // code for just getting the services without reservation itself
-  // reservation.forEach(element => {
-  //     services.push(element.reservationservices)
-  // });
-  response.status(200).json(reservation);
 }
 
 module.exports = {

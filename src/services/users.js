@@ -1,58 +1,91 @@
 const Users = require('../models/index').users;
+const checkForError = require('./errorHandler');
 
 async function createUser(request, response) {
-  const { firstName, lastName, email, password, type } = request.body;
+  try {
+    const { firstName, lastName, email, password, type } = request.body;
 
-  await Users.bulkCreate([
-    {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-      type: type,
-    },
-  ]);
+    const creation = await Users.bulkCreate([
+      {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        type: type,
+      },
+    ]);
 
-  response.status(201).send(`User successfully created`);
+    await checkForError(creation);
+
+    response.status(201).send(`User successfully created`);
+  } catch (error) {
+    response.status(404).send('Not able to create users');
+  }
 }
 
 async function getUsers(request, response) {
-  const data = await Users.findAll();
-  response.status(200).json(data);
+  try {
+    const data = await Users.findAll();
+
+    await checkForError(data);
+
+    response.status(200).json(data);
+  } catch (error) {
+    response.status(404).send('Not able to find users');
+  }
 }
 
 async function getUser(request, response) {
-  const data = await Users.findAll({ where: { id: request.params.id } });
-  response.status(200).json(data);
+  try {
+    const data = await Users.findAll({ where: { id: request.params.id } });
+
+    await checkForError(data);
+
+    response.status(200).json(data);
+  } catch (error) {
+    response.status(404).send('Not able to find user');
+  }
 }
 
 async function updateUser(request, response) {
-  const { id, firstName, lastName, email, password, type } = request.body;
+  try {
+    const { id, firstName, lastName, email, password, type } = request.body;
 
-  await Users.update(
-    {
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      password: password,
-      type: type,
-    },
-    {
-      where: {
-        id: id,
+    const edition = await Users.update(
+      {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+        type: type,
       },
-    }
-  );
+      {
+        where: {
+          id: id,
+        },
+      }
+    );
 
-  response.status(202).send(`User successfully updated`);
+    await checkForError(edition);
+
+    response.status(202).send(`User successfully updated`);
+  } catch (error) {
+    response.status(404).send('Not able to update user');
+  }
 }
 
 async function deleteUser(request, response) {
-  await Users.destroy({
-    where: { id: request.params.id },
-  });
+  try {
+    const deletion = await Users.destroy({
+      where: { id: request.params.id },
+    });
 
-  response.status(202).send(`User successfully deleted`);
+    await checkForError(deletion);
+
+    response.status(202).send(`User successfully deleted`);
+  } catch (error) {
+    response.status(404).send('Not able to delete user');
+  }
 }
 
 module.exports = {

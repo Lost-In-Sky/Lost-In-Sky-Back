@@ -21,18 +21,15 @@ module.exports = {
       },
       type: {
         type: DataTypes.STRING,
+        allowNull: false,
       },
       servicePrice: {
         type: DataTypes.DOUBLE,
-        allowNull: false,
-      },
-      reservationId: {
-        type: DataTypes.UUID,
         allowNull: false,
       },
     });
   },
   async down(queryInterface, DataTypes) {
     await queryInterface.dropTable('reservationservices');
-  }
+  },
 };

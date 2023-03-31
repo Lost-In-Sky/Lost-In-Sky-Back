@@ -14,6 +14,7 @@ EXPOSE 2000
 
 RUN cd ./src && \
 sequelize db:create && \
-sequelize db:migrate
+sequelize db:migrate && \
+sequelize db:seed:all
 
 CMD ["npm", "run", "dev"]
