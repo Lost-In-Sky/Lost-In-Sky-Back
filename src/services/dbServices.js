@@ -9,27 +9,22 @@ Reservations.belongsTo(Cottages, {
 
 async function getAllReservationsForCottage(request, response) {
   try {
-    let dates = [];
+    let data = [];
     let cotId = request.params.id;
-    const data = await Reservations.findAll({
-      include: [
-        {
-          model: Cottages,
-          required: true,
-          where: { id: cotId },
-        },
-      ],
+    console.log(cotId);
+    const reservations = await Reservations.findAll({
+      where: { cottageId: cotId },
     });
 
-    await checkForError(data);
+    await checkForError(reservations);
 
-    data.forEach((element) => {
-      dates.push({
+    reservations.forEach((element) => {
+      data.push({
         checkIn: element.checkIn,
         checkOut: element.checkOut,
       });
     });
-    response.status(200).json(dates);
+    response.status(200).json(data);
   } catch (error) {
     response
       .status(404)
@@ -43,7 +38,7 @@ async function getAllServicesForReservations(request, response) {
     const reservation = await Reservations.findAll({
       where: { id: reservationId },
     });
-    const serviceForThisReservation = await ReservationServices.findAll({
+    const data = await ReservationServices.findAll({
       where: { id: reservation[0].service.id },
     });
 
@@ -51,14 +46,14 @@ async function getAllServicesForReservations(request, response) {
       return response.status(404).json({ error: 'Reservation not found' });
     }
 
-    if (!serviceForThisReservation) {
+    if (!data) {
       return response.status(404).json({ error: 'Service not found' });
     }
 
     await checkForError(reservation);
-    await checkForError(serviceForThisReservation);
+    await checkForError(data);
 
-    response.status(200).json(serviceForThisReservation);
+    response.status(200).json(data);
   } catch (error) {
     response
       .status(404)
