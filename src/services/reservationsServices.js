@@ -3,13 +3,12 @@ const checkForError = require('./errorHandler');
 
 async function createService(request, response) {
   try {
-    const { date, status, type, servicePrice } = request.body;
+    const { type, description, servicePrice } = request.body;
 
     const creation = await ReservationServices.bulkCreate([
       {
-        date: date,
-        status: status,
         type: type,
+        description: description,
         servicePrice: servicePrice,
       },
     ]);
@@ -50,13 +49,12 @@ async function getService(request, response) {
 
 async function updateService(request, response) {
   try {
-    const { date, status, type, servicePrice } = request.body;
+    const { type, description, servicePrice } = request.body;
 
     const edition = await ReservationServices.update(
       {
-        date: date,
-        status: status,
         type: type,
+        description: description,
         servicePrice: servicePrice,
       },
       {

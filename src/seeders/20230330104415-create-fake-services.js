@@ -16,21 +16,18 @@ module.exports = {
       'reservationservices',
       [
         {
-          date: '2023-05-06',
-          status: true,
           type: 'caxiknerov senyak',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
           servicePrice: 20000,
         },
         {
-          date: '2023-06-06',
-          status: false,
           type: 'breakfast',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
           servicePrice: 10000,
         },
         {
-          date: '2023-07-06',
-          status: true,
           type: 'music',
+          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ',
           servicePrice: 30000,
         },
       ],
