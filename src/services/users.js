@@ -61,8 +61,15 @@ async function getUser(request, response) {
 async function updateUser(request, response) {
   try {
     const id = request.params.id;
-    const { firstName, lastName, email, password, type } = request.body;
-    let updatedHashedPassword = await bcrypt.hash(password, 8);
+    const { firstName, lastName, email, password, password_confirm, type } = request.body;
+    let updatedHashedPassword;
+    if (password && password_confirm) {
+      if (password !== password_confirm) {
+        response.status(400).send('Passwords do not match!');
+      } else {
+          updatedHashedPassword = await bcrypt.hash(password, 8);
+      }
+    }
 
     const edition = await Users.update(
       {

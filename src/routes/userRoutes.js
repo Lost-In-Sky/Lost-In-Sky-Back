@@ -15,9 +15,9 @@ const {
 
 router.post('/', createUser);
 
-router.get('/', [authJwt.verifyToken, authJwt.isAdmin], getUsers);
+router.get('/', getUsers);
 
-router.get('/:id', [authJwt.verifyToken, authJwt.isAdmin], getUser);
+router.get('/:id', getUser);
 
 router.patch('/:id', updateUser);
 
@@ -29,6 +29,6 @@ router.post("/signin", signIn)
 
 router.post("/signout", signOut)
 
-router.post('/adminpanel', [authJwt.verifyToken, authJwt.isAdmin], adminBoard)
+router.post('/adminpanel', adminBoard)
 
 module.exports = router;

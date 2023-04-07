@@ -49,6 +49,7 @@ async function getService(request, response) {
 
 async function updateService(request, response) {
   try {
+    const id = request.params.id;
     const { type, description, servicePrice } = request.body;
 
     const edition = await ReservationServices.update(

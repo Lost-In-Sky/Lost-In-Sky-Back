@@ -35,13 +35,16 @@ async function getAllReservationsForCottage(request, response) {
 async function getAllServicesForReservations(request, response) {
   try {
     const reservationId = request.params.id;
-    const reservation = await Reservations.findAll({
+    const reservation = await Reservations.findOne({
       where: { id: reservationId },
     });
-    const data = await ReservationServices.findAll({
-      where: { id: reservation[0].service.id },
-    });
-
+    let data = [];
+    for (const element of reservation.service) {
+      let item = await ReservationServices.findOne({
+        where: { id: element },
+      });
+      data.push(item);
+    }
     if (!reservation) {
       return response.status(404).json({ error: 'Reservation not found' });
     }

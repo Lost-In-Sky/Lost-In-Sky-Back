@@ -14,6 +14,18 @@ module.exports = {
         defaultValue: false,
         allowNull: false,
       },
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      phoneNumber: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       date: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -36,7 +48,7 @@ module.exports = {
         type: DataTypes.JSON,
       },
       service: {
-        type: DataTypes.JSON,
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
       },
       cottageId: {
         type: DataTypes.INTEGER,

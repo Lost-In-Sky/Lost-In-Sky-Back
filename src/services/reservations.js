@@ -3,34 +3,43 @@ const checkForError = require('./errorHandler');
 const Cottages = require('../models/index').cottages;
 const ReservationServices = require('../models/index').reservationservices;
 
-async function calculateTotalPrice(
-  cottageId,
-  serviceId,
-  checkInDate,
-  checkOutDate
-) {
-  const cottagePrice = await Cottages.findOne({ where: { id: cottageId } });
-  const servicePrice = await ReservationServices.findOne({
-    where: { id: serviceId },
-  });
-  const date1 = new Date(checkInDate);
-  const date2 = new Date(checkOutDate);
-  const diffTime = Math.abs(date2 - date1);
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+// async function calculateTotalPrice(
+//   cottageId,
+//   services,
+//   checkInDate,
+//   checkOutDate
+// ) {
+//   const cottage = await Cottages.findOne({ where: { id: cottageId } });
+//   let serviceTotalPrice = 0;
+//   if (services.length !== 0) {
+//     for (const element of services) {
+//       let { servicePrice } = await ReservationServices.findOne({
+//         where: { id: element },
+//       });
+//       serviceTotalPrice += servicePrice;
+//     }
+//   }
+//   const date1 = new Date(checkInDate);
+//   const date2 = new Date(checkOutDate);
+//   const diffTime = Math.abs(date2 - date1);
+//   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-  let totalPrice = cottagePrice.price * diffDays + servicePrice.servicePrice;
+//   let totalPrice = cottage.price * diffDays + serviceTotalPrice;
 
-  return totalPrice;
-}
-
+//   return totalPrice;
+// }
 
 async function createReservation(request, response) {
   try {
     const {
       approved,
+      firstName,
+      lastName,
+      phoneNumber,
       date,
       checkIn,
       checkOut,
+      totalPrice,
       description,
       service,
       cottageId,
@@ -40,14 +49,12 @@ async function createReservation(request, response) {
       {
         approved: approved,
         date: date,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phoneNumber,
         checkIn: checkIn,
         checkOut: checkOut,
-        totalPrice: await calculateTotalPrice(
-          cottageId,
-          service.id,
-          checkIn,
-          checkOut
-        ),
+        totalPrice: totalPrice,
         description: description,
         service: service,
         cottageId: cottageId,
@@ -90,9 +97,12 @@ async function getReservation(request, response) {
 
 async function updateReservation(request, response) {
   try {
+    const id = request.params.id;
     const {
-      id,
       approved,
+      firstName,
+      lastName,
+      phoneNumber,
       date,
       checkIn,
       checkOut,
@@ -105,6 +115,9 @@ async function updateReservation(request, response) {
     const edition = await Reservations.update(
       {
         approved: approved,
+        firstName: firstName,
+        lastName: lastName,
+        phoneNumber: phoneNumber,
         date: date,
         checkIn: checkIn,
         checkOut: checkOut,
@@ -130,7 +143,7 @@ async function updateReservation(request, response) {
 
 async function deleteReservation(request, response) {
   try {
-    const deletion = await Reservation.destroy({
+    const deletion = await Reservations.destroy({
       where: { id: request.params.id },
     });
 
