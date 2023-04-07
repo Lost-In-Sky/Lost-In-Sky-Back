@@ -4,6 +4,8 @@ const {
   getUser,
   updateUser,
   deleteUser,
+  signIn,
+  signOut
 } = require('../services/users');
 
 // Users Controller
@@ -25,4 +27,16 @@ exports.updateUser = (request, response) => {
 
 exports.deleteUser = (request, response) => {
   deleteUser(request, response);
+};
+
+exports.signIn = (request, response) => {
+  signIn(request, response);
+};
+
+exports.signOut = (request, response) => {
+  signOut(request, response);
+};
+
+exports.adminBoard = (req, res) => {
+  res.status(200).send("Admin Content.");
 };

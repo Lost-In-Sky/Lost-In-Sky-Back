@@ -1,4 +1,5 @@
 const Reservations = require('../models/index').reservations;
+const ReservationServices = require('../models/index').reservationservices;
 const Cottages = require('../models/index').cottages;
 const checkForError = require('./errorHandler');
 
@@ -8,48 +9,54 @@ Reservations.belongsTo(Cottages, {
 
 async function getAllReservationsForCottage(request, response) {
   try {
-    let dates = [];
+    let data = [];
     let cotId = request.params.id;
-    const data = await Reservations.findAll({
-      include: [
-        {
-          model: Cottages,
-          required: true,
-          where: { id: cotId },
-        },
-      ],
+    console.log(cotId);
+    const reservations = await Reservations.findAll({
+      where: { cottageId: cotId },
     });
 
-    await checkForError(data);
+    await checkForError(reservations);
 
-    data.forEach((element) => {
-      dates.push({
+    reservations.forEach((element) => {
+      data.push({
         checkIn: element.checkIn,
         checkOut: element.checkOut,
       });
     });
-    response.status(200).json(dates);
+    response.status(200).json(data);
   } catch (error) {
-    response.status(404).send('Not able to find any reservation connected to this cottage');
+    response
+      .status(404)
+      .send('Not able to find any reservation connected to this cottage');
   }
 }
 
 async function getAllServicesForReservations(request, response) {
   try {
     const reservationId = request.params.id;
-
-    const reservation = await Reservations.findAll({
+    const reservation = await Reservations.findOne({
       where: { id: reservationId },
-      include: { model: ReservationService },
     });
-
+    let data = [];
+    for (const element of reservation.service) {
+      let item = await ReservationServices.findOne({
+        where: { id: element },
+      });
+      data.push(item);
+    }
     if (!reservation) {
       return response.status(404).json({ error: 'Reservation not found' });
     }
 
-    await checkForError(reservation);
+    if (!data) {
+      return response.status(404).json({ error: 'Service not found' });
+    }
 
-    response.status(200).json(reservation);
+    await checkForError(reservation);
+    await checkForError(data);
+
+    response.status(200).json(data);
   } catch (error) {
     response
       .status(404)

@@ -9,19 +9,12 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      date: {
-        type: DataTypes.DATE,
-        allowNull: false,
-        defaultValue: DataTypes.NOW,
-      },
-      status: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-        allowNull: false,
-      },
       type: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      description: {
+        type: DataTypes.STRING
       },
       servicePrice: {
         type: DataTypes.DOUBLE,

@@ -2,13 +2,12 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
   class Reservations extends Model {
-    static associate(models) {
-    }
+    static associate(models) {}
   }
   Reservations.init(
     {
-       // define the columns of the reservations table here
-       id: {
+      // define the columns of the reservations table here
+      id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
@@ -18,6 +17,18 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         allowNull: false,
+      },
+      firstName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      lastName: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
+      phoneNumber: {
+        type: DataTypes.STRING,
+        allowNull: false
       },
       date: {
         type: DataTypes.DATE,
@@ -41,7 +52,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.JSON,
       },
       service: {
-        type: DataTypes.JSON,
+        type: DataTypes.ARRAY(DataTypes.INTEGER),
+        defaultValue: [],
       },
       cottageId: {
         type: DataTypes.INTEGER,

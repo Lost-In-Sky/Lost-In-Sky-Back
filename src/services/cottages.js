@@ -47,6 +47,7 @@ async function getCottage(request, response) {
 
 async function updateCottage(request, response) {
   try {
+    const id = request.params.id;
     const { name, capacity, price, numberOfFloors, space } = request.body;
 
     const edition = await Cottages.update(
@@ -59,7 +60,7 @@ async function updateCottage(request, response) {
       },
       {
         where: {
-          id: request.params.id,
+          id: id,
         },
       }
     );
