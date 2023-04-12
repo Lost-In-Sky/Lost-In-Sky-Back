@@ -10,11 +10,11 @@ const { sequelize } = require('./models');
 const app = express();
 const port = 2000;
 
-// app.use(
-//   cors({
-//     origin: ['*','http://localhost:8080/*', 'http://localhost:3001'],
-//   })
-// );
+app.use(
+  cors({
+    origin: ['*','http://localhost:3000/*'],
+  })
+);
 
 app.use(bodyParser.json());
 app.use(

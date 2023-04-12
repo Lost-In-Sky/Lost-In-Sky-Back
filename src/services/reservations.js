@@ -1,33 +1,5 @@
 const Reservations = require('../models/index').reservations;
 const checkForError = require('./errorHandler');
-const Cottages = require('../models/index').cottages;
-const ReservationServices = require('../models/index').reservationservices;
-
-// async function calculateTotalPrice(
-//   cottageId,
-//   services,
-//   checkInDate,
-//   checkOutDate
-// ) {
-//   const cottage = await Cottages.findOne({ where: { id: cottageId } });
-//   let serviceTotalPrice = 0;
-//   if (services.length !== 0) {
-//     for (const element of services) {
-//       let { servicePrice } = await ReservationServices.findOne({
-//         where: { id: element },
-//       });
-//       serviceTotalPrice += servicePrice;
-//     }
-//   }
-//   const date1 = new Date(checkInDate);
-//   const date2 = new Date(checkOutDate);
-//   const diffTime = Math.abs(date2 - date1);
-//   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-//   let totalPrice = cottage.price * diffDays + serviceTotalPrice;
-
-//   return totalPrice;
-// }
 
 async function createReservation(request, response) {
   try {
