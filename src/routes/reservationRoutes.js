@@ -14,7 +14,7 @@ router.post('/', createReservation);
 
 router.get('/', getReservations);
 
-router.get('/reservationsByDay', getReservationsByDay)
+router.post('/reservationsByDay', getReservationsByDay)
 
 router.get('/newReservations', getUnapprovedReservations)
 
