@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllReservationsForCottage } = require('../controllers/controller');
+const { getAllReservationsForCottage, getReservationsByDay, getUnapprovedReservations } = require('../controllers/controller');
 const {
   createReservation,
   getReservations,
@@ -13,6 +13,10 @@ const {
 router.post('/', createReservation);
 
 router.get('/', getReservations);
+
+router.post('/reservationsByDay', getReservationsByDay)
+
+router.get('/newReservations', getUnapprovedReservations)
 
 router.get('/:id', getReservation);
 

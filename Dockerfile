@@ -1,5 +1,7 @@
 FROM node:18-alpine3.16
 
+ENV NODE_PATH=./src
+
 WORKDIR /app
 
 COPY package*.json ./
